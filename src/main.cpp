@@ -2,8 +2,10 @@
 #include <__msvc_ostream.hpp>
 
 #include "raylib.h"
-#include "../include/RigidBody2D.hpp"
+#include "Scene.hpp"
+#include "../include/KinematicBody2D.hpp"
 #include "../include/SpriteModule.hpp"
+#include "../include/GameObject.hpp"
 
 int main()
 {
@@ -14,35 +16,41 @@ int main()
 
     SpriteModule idleSpriteModule("res/samurai/Sprites/IDLE.png", 10);
     SpriteModule runSpriteModule("res/samurai/Sprites/RUN.png", 16);
-    RigidBody2D rbPlayer({ (float)screenWidth/2, (float)screenHeight/2 }, &idleSpriteModule);
+    KinematicBody2D player({ (float)screenWidth/2, (float)screenHeight/2 });
+    player.AddSpriteModule("idle", &idleSpriteModule);
+    player.AddSpriteModule("run", &runSpriteModule);
+    player.SetPlaySpriteModule("idle");
 
     SetTargetFPS(60);
 
-    rbPlayer.On("run", [&rbPlayer, &runSpriteModule]()
-    {
-        rbPlayer.setSpriteModule(&runSpriteModule);
-    });
-
-    rbPlayer.On("idle", [&rbPlayer, &idleSpriteModule]()
-    {
-        rbPlayer.setSpriteModule(&idleSpriteModule);
-    });
+    Scene scene;
+    scene.AddObject(&player);
 
     while (!WindowShouldClose())
     {
         if (IsKeyDown(KEY_A))
         {
-            rbPlayer.m_pos.x -= 2.0f;
-            rbPlayer.m_flipH = true;
+            player.m_pos.x -= 2.0f;
+            player.m_flipH = true;
+            player.SetPlaySpriteModule("run");
         } else if (IsKeyDown(KEY_D))
         {
-            rbPlayer.m_pos.x += 2.0f;
-            rbPlayer.m_flipH = false;
+            player.m_pos.x += 2.0f;
+            player.m_flipH = false;
+            player.SetPlaySpriteModule("run");
+        } else
+        {
+            player.SetPlaySpriteModule("idle");
+        }
+
+        if (IsKeyDown(MOUSE_BUTTON_LEFT))
+        {
+
         }
 
         BeginDrawing();
         ClearBackground(SKYBLUE);
-        rbPlayer.Update();
+        scene.DrawObjects();
         EndDrawing();
     }
 
