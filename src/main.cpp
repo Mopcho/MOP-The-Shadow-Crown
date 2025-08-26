@@ -20,6 +20,7 @@ int main()
     player.AddSpriteModule("idle", &idleSpriteModule);
     player.AddSpriteModule("run", &runSpriteModule);
     player.SetPlaySpriteModule("idle");
+    player.setScaleSize({2.0f, 2.0f});
 
     SetTargetFPS(60);
 

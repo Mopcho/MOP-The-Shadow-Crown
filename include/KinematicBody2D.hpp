@@ -10,6 +10,7 @@ class KinematicBody2D : public GameObject
 {
 public:
     Vector2 m_pos;
+    Vector2 m_scaleSize = { 1.0f, 1.0f };
     std::string m_selectedSpriteModule;
     bool m_flipH = false;
     std::unordered_map<std::string, SpriteModule *> m_spriteModules = {};
@@ -20,6 +21,12 @@ public:
 
     ~KinematicBody2D()
     {
+    }
+
+    void setScaleSize(Vector2 scale)
+    {
+        m_scaleSize.x = scale.x;
+        m_scaleSize.y = scale.y;
     }
 
     void AddSpriteModule(const std::string & name, SpriteModule * spriteModule)
@@ -46,7 +53,19 @@ public:
     void Draw()
     {
         auto spriteModule = GetCurrentSpriteModule();
-        // Adjust to m_flipH
+        processFlipH();
+
+        spriteModule->Update();
+        Rectangle dest = {m_pos.x, m_pos.y, spriteModule->frameWidth()*m_scaleSize.x, spriteModule->frameHeight()*m_scaleSize.y};
+        Vector2 origin = {spriteModule->frameWidth(), spriteModule->frameHeight()};
+        DrawTexturePro(spriteModule->m_texture, spriteModule->m_rect, dest, origin, 0.0f , WHITE);
+    }
+
+private:
+    Vector2 m_previousPosition;
+    void processFlipH()
+    {
+        auto spriteModule = GetCurrentSpriteModule();
         if (m_flipH && spriteModule->m_rect.width > 0)
         {
             spriteModule->m_rect.width = spriteModule->m_rect.width * -1;
@@ -54,15 +73,7 @@ public:
         {
             spriteModule->m_rect.width = spriteModule->m_rect.width * -1;
         }
-
-        spriteModule->Update();
-        Rectangle dest = {m_pos.x, m_pos.y, spriteModule->frameWidth()*2, spriteModule->frameHeight()*2};
-        Vector2 origin = {spriteModule->frameWidth(), spriteModule->frameHeight()};
-        DrawTexturePro(spriteModule->m_texture, spriteModule->m_rect, dest, origin, 0.0f , WHITE);
     }
-
-private:
-    Vector2 m_previousPosition;
 };
 
 #endif //RIGIDBODY2D_HPP
