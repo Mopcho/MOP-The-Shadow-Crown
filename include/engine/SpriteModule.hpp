@@ -12,14 +12,18 @@ public:
     int m_frameSpeed;
     unsigned int m_frameCounter = 0;
     unsigned int m_currentFrame = 0;
+    bool m_looping;
+    bool m_automatic;
 
-    const int FPS = 60;
+    const int FPS = 60; // TODO: Get this from the app instead
 
-    SpriteModule(const char* texturePath, unsigned int parts, int frameSpeed = 8) :
+    SpriteModule(const char* texturePath, unsigned int parts, int frameSpeed = 8, bool looping = true, bool automatic = true):
         m_texture(LoadTexture(texturePath)),
         m_spriteParts(parts),
         m_rect(0, 0, frameWidth(), frameHeight()),
-        m_frameSpeed(frameSpeed)
+        m_frameSpeed(frameSpeed),
+        m_looping(looping),
+        m_automatic(automatic)
     {
     }
 
@@ -35,7 +39,7 @@ public:
 
     float frameHeight()
     {
-        return m_texture.height;
+        return (float)m_texture.height;
     }
 
     void Update()

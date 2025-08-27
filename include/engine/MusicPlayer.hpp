@@ -21,7 +21,13 @@ public:
         std::string path;
     };
 
-    MusicPlayer(bool autoplay, bool shuffle): m_autoplay(autoplay), m_shuffle(shuffle)
+    struct Options
+    {
+        bool autoplay;
+        bool shuffle;
+    };
+
+    MusicPlayer(Options options): m_autoplay(options.autoplay), m_shuffle(options.shuffle)
     {
     }
 
