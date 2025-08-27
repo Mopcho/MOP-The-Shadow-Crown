@@ -17,7 +17,6 @@ public:
     struct MusicData
     {
         Music music;
-        std::string vibe;
         std::string name;
         std::string path;
     };
@@ -34,14 +33,13 @@ public:
         }
     }
 
-    void AddMusicStream(const std::string & path, const std::string & name, const std::string & vibe)
+    void AddMusicStream(const std::string & path, const std::string & name)
     {
         Music music = LoadMusicStream(path.c_str());
         music.looping = false;
 
         MusicData musicData;
         musicData.music = music;
-        musicData.vibe = vibe;
         musicData.name = name;
         musicData.path = path;
 

@@ -18,11 +18,12 @@ int main()
     InitWindow(screenWidth, screenHeight, "MopDungeon");
 
     InitAudioDevice();
-    MusicPlayer bgMusicPlayer(true, true);
-    bgMusicPlayer.AddMusicStream("res/sound/ost/DragonCastle.mp3", "dragon-castle", "dungeon");
-    bgMusicPlayer.AddMusicStream("res/sound/ost/IntoTheWilds.mp3", "into-the-wilds", "boss-fight");
-    bgMusicPlayer.AddMusicStream("res/sound/ost/PerituneMistyHollow.mp3", "peritune-misty-hollow", "peaceful");
-    bgMusicPlayer.AddMusicStream("res/sound/ost/TheBardsTale.mp3", "the-bards-tale", "peaceful");
+    MusicPlayer peacefulMP(true, true);
+    MusicPlayer fightMP(true, true);
+    fightMP.AddMusicStream("res/sound/ost/DragonCastle.mp3", "dragon-castle");
+    fightMP.AddMusicStream("res/sound/ost/IntoTheWilds.mp3", "into-the-wilds");
+    peacefulMP.AddMusicStream("res/sound/ost/PerituneMistyHollow.mp3", "peritune-misty-hollow");
+    peacefulMP.AddMusicStream("res/sound/ost/TheBardsTale.mp3", "the-bards-tale");
     // bgMusicPlayer.AddMusicStream("res/sound/ost/bruh.mp3", "the-bards-tale", "idk"); // 1 second track easy for testing
 
     SpriteModule idleSpriteModule("res/samurai/Sprites/IDLE.png", 10);
@@ -55,15 +56,10 @@ int main()
             player.SetPlaySpriteModule("idle");
         }
 
-        if (IsKeyDown(MOUSE_BUTTON_LEFT))
-        {
-
-        }
-
         BeginDrawing();
         ClearBackground(SKYBLUE);
         scene.DrawObjects();
-        bgMusicPlayer.Update();
+        peacefulMP.Update();
         EndDrawing();
     }
 
