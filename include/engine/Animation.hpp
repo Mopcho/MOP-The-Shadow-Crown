@@ -1,6 +1,7 @@
 #ifndef SPRITEMODULE_HPP
 #define SPRITEMODULE_HPP
 
+#include "Constants.hpp"
 #include "raylib.h"
 
 class Animation
@@ -14,8 +15,6 @@ public:
     unsigned int m_currentFrame = 0;
     bool m_looping;
     bool m_isFinished = false;
-
-    const int FPS = 60; // TODO: Get this from the app instead
 
     Animation(const char* texturePath, unsigned int parts, int frameSpeed = 8, bool looping = true):
         m_texture(LoadTexture(texturePath)),
@@ -58,6 +57,7 @@ public:
     void RepeatAnimation()
     {
         m_currentFrame = 0;
+        m_isFinished = false;
     }
 
     void Process()

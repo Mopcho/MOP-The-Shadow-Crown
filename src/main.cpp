@@ -13,7 +13,7 @@ int main()
     SetConfigFlags(FLAG_MSAA_4X_HINT);
     InitWindow(screenWidth, screenHeight, "MopDungeon");
     InitAudioDevice();
-    SetTargetFPS(60);
+    SetTargetFPS(FPS);
 
     MusicPlayer peacefulMP(MusicPlayer::Options{true, true});
     MusicPlayer fightMP(MusicPlayer::Options{true, true});
@@ -42,7 +42,6 @@ int main()
         if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
         {
             player.PlayAnimation("attack-2");
-
         } else if (IsKeyDown(KEY_D))
         {
             player.m_pos.x += 2.0f;
