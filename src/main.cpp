@@ -1,6 +1,7 @@
 #include <iostream>
 #include <__msvc_ostream.hpp>
 
+#include "MusicPlayer.hpp"
 #include "raylib.h"
 #include "Scene.hpp"
 #include "../include/KinematicBody2D.hpp"
@@ -12,7 +13,17 @@ int main()
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 450;
 
+    SetConfigFlags(FLAG_MSAA_4X_HINT);
+
     InitWindow(screenWidth, screenHeight, "MopDungeon");
+
+    InitAudioDevice();
+    MusicPlayer bgMusicPlayer(true, true);
+    bgMusicPlayer.AddMusicStream("res/sound/ost/DragonCastle.mp3", "dragon-castle", "dungeon");
+    bgMusicPlayer.AddMusicStream("res/sound/ost/IntoTheWilds.mp3", "into-the-wilds", "boss-fight");
+    bgMusicPlayer.AddMusicStream("res/sound/ost/PerituneMistyHollow.mp3", "peritune-misty-hollow", "peaceful");
+    bgMusicPlayer.AddMusicStream("res/sound/ost/TheBardsTale.mp3", "the-bards-tale", "peaceful");
+    // bgMusicPlayer.AddMusicStream("res/sound/ost/bruh.mp3", "the-bards-tale", "idk"); // 1 second track easy for testing
 
     SpriteModule idleSpriteModule("res/samurai/Sprites/IDLE.png", 10);
     SpriteModule runSpriteModule("res/samurai/Sprites/RUN.png", 16);
@@ -52,6 +63,7 @@ int main()
         BeginDrawing();
         ClearBackground(SKYBLUE);
         scene.DrawObjects();
+        bgMusicPlayer.Update();
         EndDrawing();
     }
 
