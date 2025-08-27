@@ -25,6 +25,14 @@ public:
             gameObject->Draw();
         }
     }
+
+    void ProcessObjects()
+    {
+        for (auto & gameObject : m_gameObjects)
+        {
+            gameObject->Process();
+        }
+    }
 };
 
 #endif //SCENE_HPP

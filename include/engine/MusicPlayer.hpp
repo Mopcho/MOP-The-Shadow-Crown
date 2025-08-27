@@ -109,7 +109,7 @@ public:
         }
     }
 
-    void Update()
+    void Process()
     {
         if (auto currentMusic = GetCurrentSelectedMusic())
         {

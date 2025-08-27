@@ -1,0 +1,6 @@
+#ifndef CONSTANTS_HPP
+#define CONSTANTS_HPP
+
+#define GRID_CELL_SIZE 100.0f;
+
+#endif //CONSTANTS_HPP

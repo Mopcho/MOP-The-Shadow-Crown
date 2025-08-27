@@ -4,16 +4,16 @@
 #include <functional>
 
 #include "GameObject.hpp"
-#include "SpriteModule.hpp"
+#include "Animation.hpp"
 
 class KinematicBody2D : public GameObject
 {
 public:
     Vector2 m_pos;
     Vector2 m_scaleSize = { 1.0f, 1.0f };
-    std::string m_selectedSpriteModule;
+    std::string m_selectedAnimation;
     bool m_flipH = false;
-    std::unordered_map<std::string, SpriteModule *> m_spriteModules = {};
+    std::unordered_map<std::string, Animation *> m_animations = {};
 
     KinematicBody2D(Vector2 pos): m_pos(pos)
     {
@@ -29,19 +29,40 @@ public:
         m_scaleSize.y = scale.y;
     }
 
-    void AddSpriteModule(const std::string & name, SpriteModule * spriteModule)
+    void AddAnimation(const std::string & name, Animation * spriteModule)
     {
-        m_spriteModules[name] = spriteModule;
+        m_animations[name] = spriteModule;
     }
 
-    void SetPlaySpriteModule(const std::string & name)
+    void PlayAnimation(const std::string & name)
     {
-        m_selectedSpriteModule = name;
+        m_selectedAnimation = name;
+        auto animation = GetCurrentAnimation();
+        if (!animation->m_looping)
+        {
+            animation->m_isFinished = false;
+            animation->m_currentFrame = 0;
+        }
     }
 
-    SpriteModule* GetCurrentSpriteModule()
+    void PlayAnimationWhenReady(const std::string & name)
     {
-        return m_spriteModules.at(m_selectedSpriteModule);
+        auto animation = GetCurrentAnimation();
+        if (animation->m_looping)
+        {
+            this->PlayAnimation(name);
+        } else
+        {
+            animation->OnAnimationFinish([this, name]()
+            {
+                this->PlayAnimation(name);
+            });
+        }
+    }
+
+    Animation* GetCurrentAnimation()
+    {
+        return m_animations.at(m_selectedAnimation);
     }
 
     void Move(Vector2 moveWith)
@@ -50,28 +71,34 @@ public:
         m_pos.y += moveWith.y;
     }
 
+    void Process()
+    {
+        auto animation = GetCurrentAnimation();
+        animation->Process();
+        processFlipH();
+        m_dest = {m_pos.x, m_pos.y, animation->frameWidth()*m_scaleSize.x, animation->frameHeight()*m_scaleSize.y};
+        m_origin = {animation->frameWidth(), animation->frameHeight()};
+    }
+
     void Draw()
     {
-        auto spriteModule = GetCurrentSpriteModule();
-        processFlipH();
-
-        spriteModule->Update();
-        Rectangle dest = {m_pos.x, m_pos.y, spriteModule->frameWidth()*m_scaleSize.x, spriteModule->frameHeight()*m_scaleSize.y};
-        Vector2 origin = {spriteModule->frameWidth(), spriteModule->frameHeight()};
-        DrawTexturePro(spriteModule->m_texture, spriteModule->m_rect, dest, origin, 0.0f , WHITE);
+        auto animation = GetCurrentAnimation();
+        DrawTexturePro(animation->m_texture, animation->m_rect, m_dest, m_origin, 0.0f , WHITE);
     }
 
 private:
-    Vector2 m_previousPosition;
+    Rectangle m_dest;
+    Vector2 m_origin;
+
     void processFlipH()
     {
-        auto spriteModule = GetCurrentSpriteModule();
-        if (m_flipH && spriteModule->m_rect.width > 0)
+        auto animation = GetCurrentAnimation();
+        if (m_flipH && animation->m_rect.width > 0)
         {
-            spriteModule->m_rect.width = spriteModule->m_rect.width * -1;
-        } else if (!m_flipH && spriteModule->m_rect.width < 0)
+            animation->m_rect.width = animation->m_rect.width * -1;
+        } else if (!m_flipH && animation->m_rect.width < 0)
         {
-            spriteModule->m_rect.width = spriteModule->m_rect.width * -1;
+            animation->m_rect.width = animation->m_rect.width * -1;
         }
     }
 };

@@ -1,3 +1,5 @@
+#include <iostream>
+
 #include "raylib.h"
 #include <engine/MusicPlayer.hpp>
 #include <engine/KinematicBody2D.hpp>
@@ -19,17 +21,17 @@ int main()
     fightMP.AddMusicStream("res/sound/ost/IntoTheWilds.mp3", "into-the-wilds");
     peacefulMP.AddMusicStream("res/sound/ost/PerituneMistyHollow.mp3", "peritune-misty-hollow");
     peacefulMP.AddMusicStream("res/sound/ost/TheBardsTale.mp3", "the-bards-tale");
-    // bgMusicPlayer.AddMusicStream("res/sound/ost/bruh.mp3", "the-bards-tale", "idk"); // 1 second track easy for testing
+    // bgMusicPlayer.AddMusicStream("res/sound/ost/bruh.mp3", "the-bards-tale"); // 1 second track easy for testing
 
-    SpriteModule idleSpriteModule("res/Samurai/Sprites/IDLE.png", 10);
-    SpriteModule runSpriteModule("res/Samurai/Sprites/RUN.png", 16);
-    SpriteModule jumpStartSpriteModule("res/Samurai/Sprites/JUMP-START.png", 3);
+    Animation idleSpriteModule("res/Samurai/Sprites/IDLE.png", 10);
+    Animation runSpriteModule("res/Samurai/Sprites/RUN.png", 16);
+    Animation attackTwoSpriteModule("res/Samurai/Sprites/ATTACK 2.png", 7, 8, false);
 
     KinematicBody2D player({ (float)screenWidth/2, (float)screenHeight/2 });
-    player.AddSpriteModule("idle", &idleSpriteModule);
-    player.AddSpriteModule("run", &runSpriteModule);
-    player.AddSpriteModule("jump-start", &jumpStartSpriteModule);
-    player.SetPlaySpriteModule("idle");
+    player.AddAnimation("idle", &idleSpriteModule);
+    player.AddAnimation("run", &runSpriteModule);
+    player.AddAnimation("attack-2", &attackTwoSpriteModule);
+    player.PlayAnimation("idle");
     player.setScaleSize({2.0f, 2.0f});
 
     Scene scene;
@@ -37,28 +39,31 @@ int main()
 
     while (!WindowShouldClose())
     {
-        if (IsKeyDown(KEY_A))
+        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
         {
-            player.m_pos.x -= 2.0f;
-            player.m_flipH = true;
-            player.SetPlaySpriteModule("run");
+            player.PlayAnimation("attack-2");
+
         } else if (IsKeyDown(KEY_D))
         {
             player.m_pos.x += 2.0f;
             player.m_flipH = false;
-            player.SetPlaySpriteModule("run");
-        } else if (IsKeyDown(KEY_SPACE))
+            player.PlayAnimationWhenReady("run");
+        } else if (IsKeyDown(KEY_A))
         {
-
+            player.m_pos.x -= 2.0f;
+            player.m_flipH = true;
+            player.PlayAnimationWhenReady("run");
         } else
         {
-            player.SetPlaySpriteModule("idle");
+            player.PlayAnimationWhenReady("idle");
         }
 
+        scene.ProcessObjects();
+        peacefulMP.Process();
+
         BeginDrawing();
-        ClearBackground(SKYBLUE);
-        scene.DrawObjects();
-        peacefulMP.Update();
+            ClearBackground(SKYBLUE);
+            scene.DrawObjects();
         EndDrawing();
     }
 
