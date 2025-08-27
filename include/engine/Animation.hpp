@@ -1,12 +1,14 @@
 #ifndef SPRITEMODULE_HPP
 #define SPRITEMODULE_HPP
 
+#include <iostream>
 #include "Constants.hpp"
 #include "raylib.h"
 
 class Animation
 {
 public:
+    std::string m_texturePath;
     Texture2D m_texture;
     unsigned int m_spriteParts;
     Rectangle m_rect;
@@ -17,6 +19,7 @@ public:
     bool m_isFinished = false;
 
     Animation(const char* texturePath, unsigned int parts, int frameSpeed = 8, bool looping = true):
+        m_texturePath(texturePath),
         m_texture(LoadTexture(texturePath)),
         m_spriteParts(parts),
         m_rect(0, 0, frameWidth(), frameHeight()),
@@ -73,7 +76,7 @@ public:
             m_frameCounter = 0;
             m_currentFrame++;
 
-            if (m_currentFrame > m_spriteParts)
+            if (m_currentFrame >= m_spriteParts)
             {
                 if (m_looping)
                 {

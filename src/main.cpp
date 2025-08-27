@@ -27,7 +27,7 @@ int main()
 
     Animation idleSpriteModule("res/Samurai/Sprites/IDLE.png", 10);
     Animation runSpriteModule("res/Samurai/Sprites/RUN.png", 16);
-    Animation attackTwoSpriteModule("res/Samurai/Sprites/ATTACK 2.png", 7, 8, false);
+    Animation attackTwoSpriteModule("res/Samurai/Sprites/RUN ATTACK.png", 3, 8, false);
 
     Player player({ (float)screenWidth/2, (float)screenHeight/2 });
     player.AddAnimation("idle", &idleSpriteModule);
