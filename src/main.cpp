@@ -1,9 +1,11 @@
-#include <iostream>
-
 #include "raylib.h"
 #include <engine/MusicPlayer.hpp>
 #include <engine/KinematicBody2D.hpp>
 #include <engine/Scene.hpp>
+
+#include "game/Player.hpp"
+
+void ProcessMovement(Player & player);
 
 int main()
 {
@@ -27,7 +29,7 @@ int main()
     Animation runSpriteModule("res/Samurai/Sprites/RUN.png", 16);
     Animation attackTwoSpriteModule("res/Samurai/Sprites/ATTACK 2.png", 7, 8, false);
 
-    KinematicBody2D player({ (float)screenWidth/2, (float)screenHeight/2 });
+    Player player({ (float)screenWidth/2, (float)screenHeight/2 });
     player.AddAnimation("idle", &idleSpriteModule);
     player.AddAnimation("run", &runSpriteModule);
     player.AddAnimation("attack-2", &attackTwoSpriteModule);
@@ -39,24 +41,7 @@ int main()
 
     while (!WindowShouldClose())
     {
-        if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
-        {
-            player.PlayAnimation("attack-2");
-        } else if (IsKeyDown(KEY_D))
-        {
-            player.m_pos.x += 2.0f;
-            player.m_flipH = false;
-            player.PlayAnimationWhenReady("run");
-        } else if (IsKeyDown(KEY_A))
-        {
-            player.m_pos.x -= 2.0f;
-            player.m_flipH = true;
-            player.PlayAnimationWhenReady("run");
-        } else
-        {
-            player.PlayAnimationWhenReady("idle");
-        }
-
+        ProcessMovement(player);
         scene.ProcessObjects();
         peacefulMP.Process();
 
@@ -67,6 +52,26 @@ int main()
     }
 
     CloseWindow();
-
     return 0;
+}
+
+void ProcessMovement(Player & player)
+{
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        player.PlayAnimation("attack-2");
+    } else if (IsKeyDown(KEY_D))
+    {
+        player.m_pos.x += 2.0f;
+        player.m_flipH = false;
+        player.PlayAnimationWhenReady("run");
+    } else if (IsKeyDown(KEY_A))
+    {
+        player.m_pos.x -= 2.0f;
+        player.m_flipH = true;
+        player.PlayAnimationWhenReady("run");
+    } else
+    {
+        player.PlayAnimationWhenReady("idle");
+    }
 }
