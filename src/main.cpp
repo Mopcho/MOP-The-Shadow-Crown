@@ -27,12 +27,14 @@ int main()
 
     Animation idleSpriteModule("res/Samurai/Sprites/IDLE.png", 10);
     Animation runSpriteModule("res/Samurai/Sprites/RUN.png", 16);
-    Animation attackTwoSpriteModule("res/Samurai/Sprites/RUN ATTACK.png", 3, 8, false);
+    Animation runAttackSpriteModule("res/Samurai/Sprites/RUN ATTACK.png", 3, 8, false);
+    Animation attackSpriteModule("res/Samurai/Sprites/ATTACK 2.png", 7, 8, false);
 
     Player player({ (float)screenWidth/2, (float)screenHeight/2 });
     player.AddAnimation("idle", &idleSpriteModule);
     player.AddAnimation("run", &runSpriteModule);
-    player.AddAnimation("attack-2", &attackTwoSpriteModule);
+    player.AddAnimation("run-attack", &runAttackSpriteModule);
+    player.AddAnimation("attack-1", &attackSpriteModule);
     player.PlayAnimation("idle");
     player.setScaleSize({2.0f, 2.0f});
 
@@ -57,21 +59,32 @@ int main()
 
 void ProcessMovement(Player & player)
 {
-    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    // Play appropriate animation
+    if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && (IsKeyDown(KEY_D) || IsKeyDown(KEY_A)))
     {
-        player.PlayAnimation("attack-2");
+        player.PlayAnimationWhenReady("run-attack");
+    } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
+    {
+        player.PlayAnimationWhenReady("attack-1");
     } else if (IsKeyDown(KEY_D))
     {
-        player.m_pos.x += 2.0f;
-        player.m_flipH = false;
         player.PlayAnimationWhenReady("run");
     } else if (IsKeyDown(KEY_A))
     {
-        player.m_pos.x -= 2.0f;
-        player.m_flipH = true;
         player.PlayAnimationWhenReady("run");
     } else
     {
         player.PlayAnimationWhenReady("idle");
+    }
+
+    // Move the player
+    if (IsKeyDown(KEY_D))
+    {
+        player.m_pos.x += 2.0f;
+        player.m_flipH = false;
+    } else if (IsKeyDown(KEY_A))
+    {
+        player.m_pos.x -= 2.0f;
+        player.m_flipH = true;
     }
 }
