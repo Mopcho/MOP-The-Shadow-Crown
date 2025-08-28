@@ -3,6 +3,7 @@
 #include <engine/KinematicBody2D.hpp>
 #include <engine/Scene.hpp>
 
+#include "engine/TileSet.hpp"
 #include "game/Player.hpp"
 
 void ProcessMovement(Player & player);
@@ -38,6 +39,10 @@ int main()
     player.PlayAnimation("idle");
     player.setScaleSize({2.0f, 2.0f});
 
+    TileMap tileMap(256, "res/MossyPack/Mossy Tileset/Mossy - TileSet.png");
+    // TODO: SPecify columns
+    SceneTiles sceneTiles({1, 2, 1, 0 }, screenWidth, screenHeight, &tileMap);
+
     Scene scene;
     scene.AddObject(&player);
 
@@ -50,6 +55,7 @@ int main()
         BeginDrawing();
             ClearBackground(SKYBLUE);
             scene.DrawObjects();
+            sceneTiles.Draw();
         EndDrawing();
     }
 
