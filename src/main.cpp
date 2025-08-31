@@ -1,10 +1,14 @@
-#include "raylib.h"
-#include <engine/MusicPlayer.hpp>
-#include <engine/KinematicBody2D.hpp>
-#include <engine/Scene.hpp>
+#include <iostream>
 
-#include "engine/TileSet.hpp"
-#include "game/Player.hpp"
+#include "raylib.h"
+#include "Player.hpp"
+#include <mopengine/MusicPlayer.hpp>
+#include <mopengine/Animation.hpp>
+#include <mopengine/Scene.hpp>
+
+#include "mopengine/AnimationPlayer.hpp"
+#include "mopengine/Constants.hpp"
+#include "mopengine/TileSet.hpp"
 
 void ProcessMovement(Player & player);
 
@@ -18,30 +22,35 @@ int main()
     InitAudioDevice();
     SetTargetFPS(FPS);
 
-    MusicPlayer peacefulMP(MusicPlayer::Options{true, true});
-    MusicPlayer fightMP(MusicPlayer::Options{true, true});
+    MusicPlayer peacefulMP(MusicPlayer::MusicOptions{true, true});
+    MusicPlayer fightMP(MusicPlayer::MusicOptions{true, true});
     fightMP.AddMusicStream("res/sound/ost/DragonCastle.mp3", "dragon-castle");
     fightMP.AddMusicStream("res/sound/ost/IntoTheWilds.mp3", "into-the-wilds");
     peacefulMP.AddMusicStream("res/sound/ost/PerituneMistyHollow.mp3", "peritune-misty-hollow");
     peacefulMP.AddMusicStream("res/sound/ost/TheBardsTale.mp3", "the-bards-tale");
-    // bgMusicPlayer.AddMusicStream("res/sound/ost/bruh.mp3", "the-bards-tale"); // 1 second track easy for testing
+    // bgMusicPlayer.AddMusicStream("res/sound/ost/bruh.mp3", "bruh"); // 1 second track easy for testing
 
-    Animation idleSpriteModule("res/Samurai/Sprites/IDLE.png", 10);
-    Animation runSpriteModule("res/Samurai/Sprites/RUN.png", 16);
-    Animation runAttackSpriteModule("res/Samurai/Sprites/RUN ATTACK.png", 3, 8, false);
-    Animation attackSpriteModule("res/Samurai/Sprites/ATTACK 2.png", 7, 8, false);
+    Animation idleAnim("res/Samurai/Sprites/IDLE.png", 10);
+    Animation runAnim("res/Samurai/Sprites/RUN.png", 16);
+    Animation runAttackAnim("res/Samurai/Sprites/RUN ATTACK.png", 3, 8, false);
+    Animation attackAnim("res/Samurai/Sprites/ATTACK 2.png", 7, 8, false);
+
+    AnimationPlayer animationPlayer;
+    animationPlayer.AddAnimation("idle", &idleAnim);
+    animationPlayer.AddAnimation("run", &runAnim);
+    animationPlayer.AddAnimation("run-attack", &runAttackAnim);
+    animationPlayer.AddAnimation("attack-1", &attackAnim);
+    animationPlayer.PlayAnimation("idle");
 
     Player player({ (float)screenWidth/2, (float)screenHeight/2 });
-    player.AddAnimation("idle", &idleSpriteModule);
-    player.AddAnimation("run", &runSpriteModule);
-    player.AddAnimation("run-attack", &runAttackSpriteModule);
-    player.AddAnimation("attack-1", &attackSpriteModule);
-    player.PlayAnimation("idle");
+    player.SetAnimationPlayer(std::move(animationPlayer));
     player.setScaleSize({2.0f, 2.0f});
 
     TileMap tileMap(256, "res/MossyPack/Mossy Tileset/Mossy - TileSet.png");
     // TODO: SPecify columns
-    SceneTiles sceneTiles({1, 2, 1, 0 }, screenWidth, screenHeight, &tileMap);
+    int grid[] = { 0, 1, 1, 2 };
+    int gridSize = sizeof(grid) / sizeof(grid[0]);
+    SceneTiles sceneTiles(grid, gridSize , screenWidth, screenHeight, &tileMap);
 
     Scene scene;
     scene.AddObject(&player);
@@ -68,29 +77,29 @@ void ProcessMovement(Player & player)
     // Play appropriate animation
     if (IsMouseButtonDown(MOUSE_BUTTON_LEFT) && (IsKeyDown(KEY_D) || IsKeyDown(KEY_A)))
     {
-        player.PlayAnimationWhenReady("run-attack");
+        player.m_animationPlayer.PlayAnimationWhenReady("run-attack");
     } else if (IsMouseButtonDown(MOUSE_BUTTON_LEFT))
     {
-        player.PlayAnimationWhenReady("attack-1");
+        player.m_animationPlayer.PlayAnimationWhenReady("attack-1");
     } else if (IsKeyDown(KEY_D))
     {
-        player.PlayAnimationWhenReady("run");
+        player.m_animationPlayer.PlayAnimationWhenReady("run");
     } else if (IsKeyDown(KEY_A))
     {
-        player.PlayAnimationWhenReady("run");
+        player.m_animationPlayer.PlayAnimationWhenReady("run");
     } else
     {
-        player.PlayAnimationWhenReady("idle");
+        player.m_animationPlayer.PlayAnimationWhenReady("idle");
     }
 
     // Move the player
     if (IsKeyDown(KEY_D))
     {
-        player.m_pos.x += 2.0f;
+        player.Move({2.0f, 0.0f});
         player.m_flipH = false;
     } else if (IsKeyDown(KEY_A))
     {
-        player.m_pos.x -= 2.0f;
+        player.Move({-2.0f, 0.0f});
         player.m_flipH = true;
     }
 }

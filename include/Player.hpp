@@ -1,7 +1,7 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "engine/KinematicBody2D.hpp"
+#include <mopengine/KinematicBody2D.hpp>
 
 class Player : public KinematicBody2D
 {

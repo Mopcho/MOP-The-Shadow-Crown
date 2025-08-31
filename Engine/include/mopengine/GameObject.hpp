@@ -1,7 +1,9 @@
 #ifndef GAMEOBJECT_HPP
 #define GAMEOBJECT_HPP
 
-class GameObject
+#include "Constants.hpp"
+
+class MOPENGINE_API GameObject
 {
 public:
     virtual ~GameObject() = default;
