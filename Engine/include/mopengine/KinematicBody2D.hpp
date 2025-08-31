@@ -1,13 +1,13 @@
 #ifndef RIGIDBODY2D_HPP
 #define RIGIDBODY2D_HPP
 
-#include "GameObject.hpp"
+#include "Drawable.hpp"
 #include "AnimationPlayer.hpp"
 #include "raylib.h"
 
 class KinematicBody2DImpl;
 
-class MOPENGINE_API KinematicBody2D : public GameObject
+class MOPENGINE_API KinematicBody2D : public Drawable
 {
 public:
     Vector2 m_pos;

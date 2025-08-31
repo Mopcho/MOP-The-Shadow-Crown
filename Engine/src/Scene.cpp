@@ -2,7 +2,7 @@
 
 Scene::Scene() = default;
 
-void Scene::AddObject(GameObject* gameObject)
+void Scene::AddObject(Drawable* gameObject)
 {
     m_gameObjects.emplace_back(gameObject);
 }

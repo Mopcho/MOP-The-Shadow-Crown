@@ -1,14 +1,10 @@
 cmake_minimum_required(VERSION 3.31)
-project(MopDungeon CXX)
+project(SceneEditor CXX)
 
 include(FetchContent)
 
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_EXTENSIONS OFF)
-
-# Game Engine
-add_subdirectory(Engine)
-add_subdirectory(SceneEditor)
 
 # --- RayLib ---
 if (NOT TARGET raylib)
@@ -39,11 +35,3 @@ set(SOURCE_FILES src/main.cpp)
 add_executable(${PROJECT_NAME} ${SOURCE_FILES})
 target_link_libraries(${PROJECT_NAME} PRIVATE raylib raygui mopengine)
 target_include_directories(${PROJECT_NAME} PRIVATE include)
-
-add_custom_target(copy_resources ALL
-    COMMAND ${CMAKE_COMMAND} -E copy_directory
-    "${CMAKE_SOURCE_DIR}/res"
-    "$<TARGET_FILE_DIR:${PROJECT_NAME}>/res"
-    COMMENT "Copying resource files..."
-)
-add_dependencies(${PROJECT_NAME} copy_resources)

@@ -8,8 +8,6 @@
 #include "Constants.hpp"
 #include "raylib.h"
 
-class AnimationImpl;
-
 class Animation
 {
 public:

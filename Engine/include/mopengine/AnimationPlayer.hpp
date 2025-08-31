@@ -4,8 +4,6 @@
 #include "Animation.hpp"
 #include "Constants.hpp"
 
-class AnimationPlayerImpl;
-
 class MOPENGINE_API AnimationPlayer
 {
 public:

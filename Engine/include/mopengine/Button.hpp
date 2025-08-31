@@ -8,8 +8,6 @@
 #include "Constants.hpp"
 #include "raylib.h"
 
-class ButtonImpl;
-
 class MOPENGINE_API Button
 {
 public:

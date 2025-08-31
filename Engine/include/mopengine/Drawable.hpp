@@ -3,10 +3,10 @@
 
 #include "Constants.hpp"
 
-class MOPENGINE_API GameObject
+class MOPENGINE_API Drawable
 {
 public:
-    virtual ~GameObject() = default;
+    virtual ~Drawable() = default;
     virtual void Draw() = 0;
     virtual void Process() = 0;
 };

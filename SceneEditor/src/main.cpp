@@ -1,12 +1,13 @@
-#include <iostream>
-
 #include "raylib.h"
-
 #define RAYGUI_IMPLEMENTATION
-#include <raygui.h>
+#include <functional>
+#include "Scene.hpp"
+
+std::vector<Scene> scenes;
 
 int main()
 {
+    unsigned int selectedScene = 0;
     constexpr int screenWidth = 800;
     constexpr int screenHeight = 450;
 
@@ -15,16 +16,13 @@ int main()
 
     while (!WindowShouldClose())
     {
+        scenes[selectedScene].Process();
         BeginDrawing();
             ClearBackground(SKYBLUE);
-            if (GuiButton({ 50, 200, 100, 50 }, "Load Scene"))
-            {
-
-            }
+            scenes[selectedScene].Draw();
         EndDrawing();
     }
 
     CloseWindow();
     return 0;
 }
-
